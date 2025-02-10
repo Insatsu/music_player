@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_local_music">
+
+    <fragment
+        android:id="@+id/navigation_local_music"
+        android:name="ru.komarov.musicplayer.localmusic.presentation.LocalMusicFragment"
+        android:label="fragment_local_music"
+        tools:layout="@layout/fragment_local_music" />
+    <fragment
+        android:id="@+id/navigation_online_music"
+        android:name="ru.komarov.musicplayer.onlinemusic.presentation.OnlineMusicFragment"
+        android:label="fragment_online_music"
+        tools:layout="@layout/fragment_online_music" />
+</navigation>
