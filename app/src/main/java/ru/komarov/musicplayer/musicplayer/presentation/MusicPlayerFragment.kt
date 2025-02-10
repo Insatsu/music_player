@@ -6,14 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ru.komarov.musicplayer.R
+import ru.komarov.musicplayer.databinding.FragmentMusicPlayerBinding
+import ru.komarov.musicplayer.databinding.FragmentOnlineMusicBinding
 
 class MusicPlayerFragment : Fragment() {
+    private var _binding: FragmentMusicPlayerBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_music_player, container, false)
+    ): View {
+        _binding = FragmentMusicPlayerBinding.inflate(inflater, container, false)
+
+
+        return binding.root
     }
 
 }
