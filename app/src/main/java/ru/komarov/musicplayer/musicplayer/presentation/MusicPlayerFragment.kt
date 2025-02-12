@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import ru.komarov.musicplayer.R
 import ru.komarov.musicplayer.databinding.FragmentMusicPlayerBinding
-import ru.komarov.musicplayer.databinding.FragmentOnlineMusicBinding
 
 class MusicPlayerFragment : Fragment() {
     private var _binding: FragmentMusicPlayerBinding? = null

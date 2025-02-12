@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/navigation_local_music"
-        android:name="ru.komarov.musicplayer.localmusic.presentation.LocalMusicFragment"
+        android:name="ru.komarov.localmusic.presentation.LocalMusicFragment"
         android:label="fragment_local_music"
         tools:layout="@layout/fragment_local_music" />
     <fragment
         android:id="@+id/navigation_online_music"
-        android:name="ru.komarov.musicplayer.onlinemusic.presentation.OnlineMusicFragment"
+        android:name="ru.komarov.onlinemusic.presentation.OnlineMusicFragment"
         android:label="fragment_online_music"
         tools:layout="@layout/fragment_online_music" />
 </navigation>

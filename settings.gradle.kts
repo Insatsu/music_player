@@ -22,3 +22,6 @@ dependencyResolutionManagement {
 rootProject.name = "MusicPlayer"
 include(":app")
 include(":musicslist")
+include(":api")
+include(":localmusic")
+include(":onlinemusic")

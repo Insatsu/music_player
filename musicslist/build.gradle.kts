@@ -40,6 +40,8 @@ dependencies {
     implementation(libs.dagger2)
     ksp(libs.dagger2.compiler)
 
+    implementation(project(":api"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

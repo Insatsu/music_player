@@ -1,5 +1,6 @@
 package ru.komarov.musicslist.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ class MusicListAdapter : RecyclerView.Adapter<MusicListAdapter.MusicListViewHold
     class MusicListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = MusicListItemBinding.bind(itemView)
         fun bind(musicItem: MusicListItemModel) = with(binding) {
-//            musicListItemIv
+            musicItem.icon?.let { it(musicListItemIv) }
             musicListItemTvTitle.text = musicItem.title
             musicListItemTvAuthor.text = musicItem.author
         }

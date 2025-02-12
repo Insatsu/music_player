@@ -50,7 +50,10 @@ dependencies {
     implementation(libs.dagger2)
     ksp(libs.dagger2.compiler)
 
+    implementation(project(":api"))
     implementation(project(":musicslist"))
+    implementation(project(":localmusic"))
+    implementation(project(":onlinemusic"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
