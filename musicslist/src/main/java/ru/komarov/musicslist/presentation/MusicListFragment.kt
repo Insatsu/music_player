@@ -55,7 +55,7 @@ class MusicListFragment : Fragment() {
             this,
             musicListViewModelFactory.get()
         ).get(MusicListViewModel::class.java)
-        
+
         adapter = MusicListAdapter()
 
         val rv_list = binding.musicListFragmentRv
