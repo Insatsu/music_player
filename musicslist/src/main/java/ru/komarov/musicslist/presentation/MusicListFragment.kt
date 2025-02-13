@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,8 +44,6 @@ class MusicListFragment : Fragment() {
         ).musicListComponent.inject(this)
 
         super.onAttach(context)
-//        
-
     }
 
     override fun onCreateView(
@@ -56,6 +55,9 @@ class MusicListFragment : Fragment() {
         vmInit()
         adapterInit()
         updateListener()
+        binding.musicListFragmentEt.addTextChangedListener {
+            updateAdapter(it?.toString())
+        }
 
         return binding.root
     }
@@ -74,8 +76,8 @@ class MusicListFragment : Fragment() {
         }
     }
 
-    private fun updateAdapter() {
-        adapter?.setMusics(vm.getMusic())
+    private fun updateAdapter(filter: String? = null) {
+        adapter?.setMusics(vm.getMusic(filter))
     }
 
     private fun adapterInit() {

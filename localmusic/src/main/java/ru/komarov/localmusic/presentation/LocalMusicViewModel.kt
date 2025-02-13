@@ -24,8 +24,6 @@ class LocalMusicViewModel @Inject constructor(private val musicListDeps: MusicLi
         musics.forEach {
             mmr.setDataSource(it)
 
-            Log.d("therad", "thread: ${Thread.currentThread().name}")
-
             val artBytes = mmr.embeddedPicture
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: "Unknown"
 
@@ -69,9 +67,7 @@ class LocalMusicViewModel @Inject constructor(private val musicListDeps: MusicLi
         }
 
         val musicsModels = musicMetaDataLoadInDeps(musics)
-        if (musicsModels != musicListDeps.musicRepository.getMusic()) {
-            musicListDeps.musicRepository.loadMusic(musicsModels)
-        }
+        musicListDeps.musicRepository.loadMusic(musicsModels)
 
 
     }

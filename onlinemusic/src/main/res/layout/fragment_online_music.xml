@@ -6,18 +6,18 @@
     android:layout_height="match_parent"
     tools:context="ru.komarov.onlinemusic.presentation.OnlineMusicFragment">
 
-    <TextView
-        android:id="@+id/online_music_fragment__tv"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:paddingStart="5dp"
-        android:text="@string/online_music_title"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@id/online_music_fragment__fcv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/online_music_fragment__tv"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:gravity="center"-->
+<!--        android:paddingStart="5dp"-->
+<!--        android:text="@string/online_music_title"-->
+<!--        android:textSize="25sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/online_music_fragment__fcv"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/online_music_fragment__fcv"
@@ -27,6 +27,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/online_music_fragment__tv" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

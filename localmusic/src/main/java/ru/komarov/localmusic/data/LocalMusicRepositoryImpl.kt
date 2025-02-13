@@ -7,6 +7,7 @@ import javax.inject.Inject
 class LocalMusicRepositoryImpl @Inject constructor() : LocalMusicRepository {
     val musicsList: ArrayList<MusicListItemModel> = ArrayList()
 
+// TODO: исправить
     override fun loadMusic(musicList: ArrayList<MusicListItemModel>): Boolean {
         musicsList.addAll(musicList)
         return true

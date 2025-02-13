@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="player_tv_style">
+        <item name="android:textSize">
+            20sp
+        </item>
+        <item name="android:layout_height">
+            0dp
+        </item>
+        <item name="android:layout_width">
+            match_parent
+        </item>
+<!--        <item name="android:layout_gravity">-->
+<!--            center-->
+<!--        </item>-->
+    </style>
+</resources>

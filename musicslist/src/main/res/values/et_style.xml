@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="music_et_style" >
+        <item name="android:background">
+            @drawable/et_shape
+        </item>
+        <item name="android:shape">
+            rectangle
+        </item>
+        <item name="cornerSize">
+            10dp
+        </item>
+        <item name="strokeWidth">
+            10dp
+        </item>
+        <item name="strokeColor">
+            @color/design_default_color_primary
+        </item>
+        <item name="android:layout_marginStart">
+            15dp
+        </item>
+        <item name="android:layout_marginEnd">
+            15dp
+        </item>
+        <item name="android:layout_marginTop">
+            5dp
+        </item>
+        <item name="android:layout_marginBottom">
+            5dp
+        </item>
+        <item name="android:layout_height">
+            0dp
+        </item>
+        <item name="android:layout_width">
+            match_parent
+        </item>
+    </style>
+</resources>
