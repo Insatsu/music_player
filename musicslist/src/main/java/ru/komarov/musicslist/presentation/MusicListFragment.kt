@@ -43,6 +43,7 @@ class MusicListFragment : Fragment() {
         ).musicListComponent.inject(this)
 
         super.onAttach(context)
+//        
 
     }
 
