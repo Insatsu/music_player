@@ -3,7 +3,6 @@ package ru.komarov.musicslist.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dagger.Component
-import ru.komarov.musicslist.data.MusicRepositoryImpl
 import ru.komarov.musicslist.domain.MusicRepository
 import ru.komarov.musicslist.presentation.MusicListFragment
 import javax.inject.Scope

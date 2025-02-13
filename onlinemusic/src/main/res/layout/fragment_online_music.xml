@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ru.komarov.onlinemusic.presentation.OnlineMusicFragment">
 
     <TextView
         android:id="@+id/online_music_fragment__tv"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:paddingStart="5dp"
         android:text="@string/online_music_title"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/online_music_fragment__fcv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/online_music_fragment__fcv"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/online_music_fragment__fcv"
@@ -24,6 +27,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/online_music_fragment__tv"/>
+        app:layout_constraintTop_toBottomOf="@id/online_music_fragment__tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package ru.komarov.localmusic.di
 
 import dagger.Binds
 import dagger.Module
+import ru.komarov.localmusic.data.LocalMusicRepositoryImpl
 import ru.komarov.localmusic.domain.LocalMusicListDeps
 import ru.komarov.localmusic.domain.LocalMusicRepository
 import ru.komarov.musicslist.di.MusicListDeps
@@ -19,5 +20,5 @@ interface DataBindModule {
 
     @Binds
     @LocalMusicScope
-    fun bindMusicListRepository(localMusicRepository: LocalMusicRepository): MusicRepository
+    fun bindMusicListRepository(localMusicRepository: LocalMusicRepositoryImpl): MusicRepository
 }

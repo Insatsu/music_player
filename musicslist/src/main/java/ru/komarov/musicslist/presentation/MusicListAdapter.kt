@@ -1,5 +1,6 @@
 package ru.komarov.musicslist.presentation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ class MusicListAdapter : RecyclerView.Adapter<MusicListAdapter.MusicListViewHold
         holder.bind(musicsList[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setMusics(musicsList: ArrayList<MusicListItemModel>) {
         this.musicsList.clear()
         this.musicsList.addAll(musicsList)
