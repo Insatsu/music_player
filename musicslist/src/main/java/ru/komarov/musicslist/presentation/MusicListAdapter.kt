@@ -19,6 +19,9 @@ class MusicListAdapter : RecyclerView.Adapter<MusicListAdapter.MusicListViewHold
             musicItem.icon?.let { it(musicListItemIv) }
             musicListItemTvTitle.text = musicItem.title
             musicListItemTvAuthor.text = musicItem.author
+            root.setOnClickListener{
+                musicItem.onClickListener()
+            }
         }
     }
 

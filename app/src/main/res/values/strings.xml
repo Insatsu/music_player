@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
     <string name="online_music_title">Online music</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="music_player_title">Music player</string>
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="player_tv_style">
+        <item name="android:layout_height">
+            wrap_content
+        </item>
+        <item name="android:layout_width">
+            wrap_content
+        </item>
+        <item name="android:gravity">
+            center
+        </item>
+        <item name="android:layout_gravity">
+            center
+        </item>
+    </style>
+
+    <style name="player_tv_title_style" parent="player_tv_style">
+
+    </style>
+
+    <style name="player_tv_music_title_style" parent="player_tv_style">
+        <item name="android:textSize">
+            25sp
+        </item>
+
+    </style>
+
+
+    <style name="player_tv_music_author_style" parent="player_tv_style">
+        <item name="android:textSize">
+            15sp
+        </item>
+    </style>
+
+
+</resources>

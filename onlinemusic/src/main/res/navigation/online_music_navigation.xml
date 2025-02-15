@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/online_music_navigation"
+    app:startDestination="@id/online_music_nav_fragment">
+
+    <fragment
+        android:id="@+id/online_music_nav_fragment"
+        android:name="ru.komarov.onlinemusic.presentation.OnlineMusicFragment"
+        android:label="fragment_online_music"
+        tools:layout="@layout/fragment_online_music" >
+
+        <deepLink app:uri="@string/nav_to_online_music"/>
+
+    </fragment>
+</navigation>

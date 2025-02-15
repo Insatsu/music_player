@@ -38,6 +38,8 @@ android {
 
 dependencies {
     implementation(libs.dagger2)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     ksp(libs.dagger2.compiler)
 
     implementation(project(":api"))

@@ -1,30 +1,59 @@
 package ru.komarov.musicplayer.di
 
+import android.app.Application
+import android.content.Context
+import dagger.Binds
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import ru.komarov.api.MusicsService
-import ru.komarov.localmusic.di.LocalMusicDeps
+import ru.komarov.api.RemoteMusicsService
 import ru.komarov.musicplayer.AppScope
-import ru.komarov.onlinemusic.di.OnlineMusicDeps
+import ru.komarov.musicplayer.data.PlayerRepositoryImpl
+import ru.komarov.musicplayer.domain.MusicController
+import ru.komarov.musicplayer.presentation.MainActivity
+import ru.komarov.player.PlayerService
+import ru.komarov.player.domain.PlayerRepository
 
 
 @[AppScope Component(modules = [AppModule::class])]
-interface AppComponent : LocalMusicDeps, OnlineMusicDeps {
+interface AppComponent {
 
-    override val musicService: MusicsService
+    val musicService: RemoteMusicsService
+
+    val playerRepository: PlayerRepository
+
+    fun inject(playerService: PlayerService)
+
+    fun inject(activity: MainActivity)
 
 
     @Component.Builder
     interface Builder {
 
+        @BindsInstance
+        fun context(context: Context): Builder
+
+        @BindsInstance
+        fun application(app: Application): Builder
+
         fun build(): AppComponent
     }
 }
 
-@Module
+@Module(includes = [AppBindModule::class])
 class AppModule {
     @[Provides AppScope]
-    fun provideMusicService(): MusicsService = MusicsService()
+    fun provideMusicService(): RemoteMusicsService = RemoteMusicsService()
+
+
 }
 
+@Module
+interface AppBindModule {
+    @[AppScope Binds]
+    fun bindPlayerMusicRepository(playerRepositoryImpl: PlayerRepositoryImpl): PlayerRepository
+
+    @[AppScope Binds]
+    fun bindMusicState(playerRepositoryImpl: PlayerRepositoryImpl): MusicController
+}

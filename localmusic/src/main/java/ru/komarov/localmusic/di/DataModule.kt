@@ -20,5 +20,10 @@ interface DataBindModule {
 
     @Binds
     @LocalMusicScope
-    fun bindMusicListRepository(localMusicRepository: LocalMusicRepositoryImpl): MusicRepository
+    fun bindMusicListRepository(localMusicRepository: LocalMusicRepository): MusicRepository
+
+    @Binds
+    @LocalMusicScope
+    fun bindLccalMusicListRepositoryImpl(localMusicRepository: LocalMusicRepositoryImpl): LocalMusicRepository
+
 }

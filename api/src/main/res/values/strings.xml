@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_to_local_music">komarov-music://music.player/local_music</string>
+    <string name="nav_to_online_music">komarov-music://music.player/online_music</string>
+    <string name="nav_to_player">komarov-music://music.player/player</string>
+</resources>

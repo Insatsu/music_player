@@ -4,25 +4,33 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.os.Environment
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import ru.komarov.api.CurrentMusicsList
 import ru.komarov.localmusic.R
+import ru.komarov.localmusic.domain.LocalMusicRepository
 import ru.komarov.musicslist.di.MusicListDeps
 import ru.komarov.musicslist.domain.MusicListItemModel
 import java.io.File
 import java.io.FileFilter
 import javax.inject.Inject
 
-class LocalMusicViewModel @Inject constructor(private val musicListDeps: MusicListDeps) :
+class LocalMusicViewModel @Inject constructor(
+//    private val musicListDeps: MusicListDeps
+    private val localMusicRepository: LocalMusicRepository
+
+) :
     ViewModel() {
+
+    private var navigateToPlayer: (() -> Unit)? = null
 
     private fun musicMetaDataLoadInDeps(musics: ArrayList<String>): ArrayList<MusicListItemModel> {
         val mmr = MediaMetadataRetriever()
         val musicModels: ArrayList<MusicListItemModel> = ArrayList()
 
-        musics.forEach {
-            mmr.setDataSource(it)
+        musics.forEach { musicPath ->
+            val id = musics.indexOf(musicPath)
+            mmr.setDataSource(musicPath)
 
             val artBytes = mmr.embeddedPicture
             val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: "Unknown"
@@ -35,16 +43,27 @@ class LocalMusicViewModel @Inject constructor(private val musicListDeps: MusicLi
             if (artBytes != null) {
                 val albumArt = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.size)
                 musicModels.add(
-                    MusicListItemModel(title = title, author = author, icon = { imageView ->
-                        imageView.setImageBitmap(albumArt)
-                    })
+                    getMusicListItemModel(
+                        id = id,
+                        title = title, author = author,
+                        icon = { imageView ->
+                            imageView.setImageBitmap(albumArt)
+                        },
+                        filePath = musicPath
+                    )
                 )
 
             } else {
                 musicModels.add(
-                    MusicListItemModel(title = title, author = author, icon = { imageView ->
-                        imageView.setImageResource(R.drawable.baseline_auto_awesome_24)
-                    })
+                    getMusicListItemModel(
+                        id = id,
+                        title = title, author = author,
+                        icon = { imageView ->
+                            imageView.setImageResource(R.drawable.baseline_auto_awesome_24)
+                        },
+                        filePath = musicPath
+                    )
+
                 )
             }
         }
@@ -56,19 +75,43 @@ class LocalMusicViewModel @Inject constructor(private val musicListDeps: MusicLi
 
 
     fun loadMusicFromDownload() {
-        val downloadPath: String = Environment.getExternalStorageDirectory().path + "/Download"
-        val directory = File(downloadPath)
+        val directory = File(localMusicRepository.getLocalFolderPath())
 
         val musics: ArrayList<String> = ArrayList()
 
         directory.listFiles(FileFilter { it.extension == "mp3" })?.forEach {
-            Log.d("test", "${it.path} ")
             musics.add(it.path)
         }
 
         val musicsModels = musicMetaDataLoadInDeps(musics)
-        musicListDeps.musicRepository.loadMusic(musicsModels)
+
+        localMusicRepository.loadMusic(musicsModels)
+
+    }
 
 
+    private fun getMusicListItemModel(
+        id: Int,
+        title: String,
+        author: String,
+        icon: (ImageView) -> Unit,
+        filePath: String
+    ): MusicListItemModel {
+        return MusicListItemModel(
+            title = title,
+            author = author,
+            icon = icon,
+            onClickListener = {
+                CurrentMusicsList.musicsList = localMusicRepository.getMusicsModelList()
+                CurrentMusicsList.currentMusicId = id
+                    this.navigateToPlayer!!()
+            },
+            path = filePath
+        )
+    }
+
+
+    fun setNavigateToPlayer(navigateToPlayer: () -> Unit) {
+        this.navigateToPlayer = navigateToPlayer
     }
 }

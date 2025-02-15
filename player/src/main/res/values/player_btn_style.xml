@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="player_btn_style">
+        <item name="android:backgroundTint">
+            @null
+        </item>
+
+    </style>
+
+    <style name="player_btn_previous_style" parent="player_btn_style">
+        <item name="android:src">
+            @drawable/baseline_skip_previous_24
+        </item>
+    </style>
+
+    <style name="player_btn_pause_style" parent="player_btn_style">
+        <item name="android:src">
+            @drawable/baseline_pause_24
+        </item>
+    </style>
+
+    <style name="player_btn_next_style" parent="player_btn_style">
+        <item name="android:src">
+            @drawable/baseline_skip_next_24
+        </item>
+    </style>
+
+
+</resources>

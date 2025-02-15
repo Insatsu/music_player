@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="player_sb_style">
+        <item name="android:layout_height">
+            wrap_content
+        </item>
+        <item name="android:layout_width">
+            0dp
+        </item>
+
+        <item name="android:layout_gravity">
+            center
+        </item>
+        <item name="android:layout_marginStart">
+            20dp
+        </item>
+        <item name="android:layout_marginEnd">
+            20dp
+        </item>
+
+    </style>
+</resources>

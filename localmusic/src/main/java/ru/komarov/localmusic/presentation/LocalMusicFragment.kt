@@ -1,8 +1,8 @@
 package ru.komarov.localmusic.presentation
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +22,6 @@ import ru.komarov.musicslist.domain.BundlesKey
 import ru.komarov.musicslist.domain.MusicListFragmentParent
 import ru.komarov.musicslist.domain.RequestKey
 import ru.komarov.musicslist.domain.SuccessResultMessage
-import ru.komarov.musicslist.presentation.MusicListFragment
 import javax.inject.Inject
 
 
@@ -48,8 +48,15 @@ class LocalMusicFragment : Fragment(), MusicListFragmentParent {
     ): View {
         _binding = FragmentLocalMusicBinding.inflate(inflater, container, false)
 
-        binding.localMusicFragmentFcv.getFragment<MusicListFragment>()
+        initMusicList()
 
+        return binding.root
+    }
+
+    private fun initMusicList() {
+        vm.setNavigateToPlayer {
+            findNavController().navigate(Uri.parse(getString(ru.komarov.api.R.string.nav_to_player)))
+        }
         CoroutineScope(Dispatchers.IO).launch {
             vm.loadMusicFromDownload()
             withContext(Dispatchers.Main) {
@@ -59,7 +66,5 @@ class LocalMusicFragment : Fragment(), MusicListFragmentParent {
                 )
             }
         }
-
-        return binding.root
     }
 }

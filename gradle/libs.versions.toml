@@ -25,6 +25,8 @@ ksp = "2.1.0-1.0.29"
 
 dagger2 = "2.53.1"
 
+media = "1.7.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,6 +50,8 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 
 dagger2 = {group="com.google.dagger", name="dagger", version.ref = "dagger2"}
 dagger2-compiler = {group = "com.google.dagger", name="dagger-compiler", version.ref="dagger2"}
+
+media = { group = "androidx.media", name = "media", version.ref = "media" }
 
 
 [plugins]

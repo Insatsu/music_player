@@ -2,7 +2,6 @@ package ru.komarov.localmusic.di
 
 import androidx.lifecycle.ViewModel
 import dagger.Component
-import ru.komarov.api.MusicsService
 import ru.komarov.localmusic.presentation.LocalMusicFragment
 import javax.inject.Scope
 
@@ -26,7 +25,6 @@ internal interface LocalMusicComponent {
 
 
 interface LocalMusicDeps {
-    val musicService: MusicsService
 }
 
 

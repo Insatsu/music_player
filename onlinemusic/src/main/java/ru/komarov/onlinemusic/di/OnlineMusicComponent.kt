@@ -2,7 +2,7 @@ package ru.komarov.onlinemusic.di
 
 import androidx.lifecycle.ViewModel
 import dagger.Component
-import ru.komarov.api.MusicsService
+import ru.komarov.api.RemoteMusicsService
 import ru.komarov.onlinemusic.presentation.OnlineMusicFragment
 import javax.inject.Scope
 
@@ -23,7 +23,7 @@ interface OnlineMusicComponent {
 
 
 interface OnlineMusicDeps {
-    val musicService: MusicsService
+    val musicService: RemoteMusicsService
 }
 
 object OnlineMusicDepsStore {
