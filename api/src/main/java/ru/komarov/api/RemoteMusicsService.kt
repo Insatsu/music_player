@@ -4,8 +4,16 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface RemoteMusicsService {
+
+    @GET("chart")
+    suspend fun getChart(): RemoteListMusic
+
+    @GET("track/{id}")
+    suspend fun getMusicById(@Path("id") id: Int): RemoteMusic
 
 }
 
@@ -20,4 +28,4 @@ fun RemoteMusicsService(): RemoteMusicsService{
     return retrofit.create(RemoteMusicsService::class.java)
 }
 
-const val BASE_URL = "https://api.deezer.com"
+const val BASE_URL = "https://api.deezer.com/"

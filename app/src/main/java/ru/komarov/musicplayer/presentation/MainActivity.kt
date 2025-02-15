@@ -26,6 +26,7 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     @Inject
     lateinit var musicController: MusicController
 
@@ -68,14 +69,15 @@ class MainActivity : AppCompatActivity() {
                 if (CurrentMusicsList.musicsList == null)
                     return@addOnDestinationChangedListener
 
+
                 musicController.setMusicList(
                     CurrentMusicsList.musicsList!!,
                     CurrentMusicsList.currentMusicId!!
                 )
 
                 runOnUiThread {
-                    if (!musicController.isStarted())
-                        musicController.startService()
+                    musicController.startService()
+
 
                 }
                 CurrentMusicsList.musicsList = null

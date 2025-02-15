@@ -31,7 +31,7 @@ object OnlineMusicDepsStore {
 }
 
 
-internal class OnlineMusicComponentViewModel() : ViewModel() {
+internal class OnlineMusicComponentViewModel : ViewModel() {
     val onlineMusicComponent = DaggerOnlineMusicComponent.builder().deps(OnlineMusicDepsStore.deps).build()
 }
 

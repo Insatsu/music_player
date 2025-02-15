@@ -10,7 +10,9 @@ import dagger.Provides
 import ru.komarov.api.RemoteMusicsService
 import ru.komarov.musicplayer.AppScope
 import ru.komarov.musicplayer.data.PlayerRepositoryImpl
+import ru.komarov.musicplayer.data.PlayerServiceControllerImpl
 import ru.komarov.musicplayer.domain.MusicController
+import ru.komarov.musicplayer.domain.PlayerServiceController
 import ru.komarov.musicplayer.presentation.MainActivity
 import ru.komarov.player.PlayerService
 import ru.komarov.player.domain.PlayerRepository
@@ -56,4 +58,7 @@ interface AppBindModule {
 
     @[AppScope Binds]
     fun bindMusicState(playerRepositoryImpl: PlayerRepositoryImpl): MusicController
+
+    @[AppScope Binds]
+    fun bindPlayerServiceController(playerServiceControllerImpl: PlayerServiceControllerImpl): PlayerServiceController
 }

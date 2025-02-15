@@ -12,6 +12,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.webkit.URLUtil
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
 import androidx.core.content.ContextCompat
@@ -26,6 +27,7 @@ import ru.komarov.api.MusicModel
 import ru.komarov.player.domain.PlayerRepository
 import java.io.File
 import javax.inject.Inject
+import kotlin.io.path.Path
 
 
 class PlayerService : Service() {
@@ -46,7 +48,9 @@ class PlayerService : Service() {
 
     private val currentMusic = MutableStateFlow<MusicModel?>(null)
 
-    val maxDuration get() = musicPlayer?.duration
+    val maxDuration = MutableStateFlow(musicPlayer?.duration)
+
+    //    val currentDuration = MutableStateFlow(musicPlayer?.currentPosition)
     val currentDuration get() = musicPlayer?.currentPosition
     val isPlaying = MutableStateFlow(musicPlayer?.isPlaying)
 
@@ -88,6 +92,12 @@ class PlayerService : Service() {
                     stopForeground(STOP_FOREGROUND_DETACH)
                 }
 
+                ACTION_UPDATE -> {
+                    currentMusic.update { playerRepository.getPlayerMusic() }
+                    if (currentMusic.value != null)
+                        play(currentMusic.value!!)
+                }
+
                 else -> {
                     currentMusic.update { playerRepository.getPlayerMusic() }
                     if (currentMusic.value != null)
@@ -95,21 +105,10 @@ class PlayerService : Service() {
                 }
             }
         }
+        updateMaxDuration()
         return START_STICKY
     }
 
-//    fun updateDuration() {
-//        job = coroutineScope.launch {
-//            if (musicPlayer?.isPlaying.not()) return@launch
-//
-//            maxDuration.update { musicPlayer?.duration.toFloat() }
-//
-//            while (true) {
-//                currentDuration.update { musicPlayer?.currentPosition.toFloat() }
-//
-//            }
-//        }
-//    }
 
     private fun sendNotification(music: MusicModel) {
         if (musicPlayer == null) {
@@ -203,6 +202,10 @@ class PlayerService : Service() {
 
         isPlaying.update { musicPlayer?.isPlaying }
 
+//        updateCurrentDuration()
+
+
+
         sendNotification(currentMusic.value!!)
     }
 
@@ -210,6 +213,9 @@ class PlayerService : Service() {
     fun play(music: MusicModel) {
         musicPlayer = MediaPlayer()
         updateMusicPlayer(music)
+
+//        updateMaxDuration()
+//        updateCurrentDuration()
     }
 
     override fun onDestroy() {
@@ -224,10 +230,28 @@ class PlayerService : Service() {
         currentMusic.update { playerRepository.getPlayerMusic() }
         if (currentMusic.value != null)
             play(currentMusic.value!!)
+
+//        updateMaxDuration()
+    }
+
+//    private fun updateCurrentDuration() {
+////        currentDuration.update {
+////            musicPlayer?.currentPosition
+////        }
+//    }
+
+    private fun updateMaxDuration() {
+        Log.d("Service", "max dur: ${musicPlayer?.duration}")
+        maxDuration.update { musicPlayer?.duration }
     }
 
     private fun updateMusicPlayer(music: MusicModel) {
-        musicPlayer?.setDataSource(this, Uri.fromFile(File(music.musicPath)))
+
+        if (!URLUtil.isValidUrl(music.musicPath))
+            musicPlayer?.setDataSource(this, Uri.fromFile(File(music.musicPath)))
+        else if (URLUtil.isNetworkUrl(music.musicPath))
+            musicPlayer?.setDataSource(this, Uri.parse(music.musicPath))
+
         musicPlayer?.prepareAsync()
         musicPlayer?.setOnPreparedListener {
             musicPlayer?.start()
@@ -241,5 +265,6 @@ class PlayerService : Service() {
         const val ACTION_NEXT = "action_next"
         const val ACTION_PREVIOUS = "action_previous"
         const val ACTION_STOP = "action_stop"
+        const val ACTION_UPDATE = "action_update"
     }
 }
