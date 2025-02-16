@@ -13,7 +13,8 @@ data class RemoteArtist(
 )
 
 data class RemoteAlbum(
-    val cover: String
+    val cover: String,
+    val title: String
 )
 
 
