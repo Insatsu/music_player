@@ -8,7 +8,11 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.webkit.URLUtil
 import androidx.core.app.NotificationCompat
@@ -41,12 +45,16 @@ class PlayerService : Service() {
     val currentDuration get() = musicPlayer?.currentPosition
     val isPlaying = MutableStateFlow(musicPlayer?.isPlaying)
 
+    private lateinit var mediaSession: MediaSessionCompat
 
     inner class MusicBinder : Binder() {
         fun getService() = this@PlayerService
     }
 
-    override fun onBind(intent: Intent): IBinder = binder
+    override fun onBind(intent: Intent): IBinder {
+        mediaSession = MediaSessionCompat(baseContext, "Komarov music")
+        return binder
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
@@ -104,7 +112,9 @@ class PlayerService : Service() {
             if (musicPlayer?.isPlaying!!) R.drawable.baseline_pause_24 else R.drawable.baseline_play_arrow_24
 
         val style =
-            androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2)
+            androidx.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1, 2)
+                .setMediaSession(mediaSession.sessionToken)
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setStyle(style)
@@ -122,16 +132,72 @@ class PlayerService : Service() {
             .addAction(R.drawable.baseline_skip_next_24, "Next", createNextPendingIntent())
             .build()
 
+        // Add seekbar if android version is Q
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mediaSession.setMetadata(
+                MediaMetadataCompat.Builder().putLong(
+                    MediaMetadataCompat.METADATA_KEY_DURATION, musicPlayer!!.duration.toLong()
+                ).build()
+            )
+            mediaSession.setPlaybackState(getPlayBackState())
+            mediaSession.setCallback(object : MediaSessionCompat.Callback() {
+
+                override fun onPlay() {
+                    super.onPlay()
+                    playPause()
+                }
+
+                override fun onPause() {
+                    super.onPause()
+                    playPause()
+                }
+
+                override fun onSkipToNext() {
+                    super.onSkipToNext()
+                    next()
+                }
+
+                override fun onSkipToPrevious() {
+                    super.onSkipToPrevious()
+                    previous()
+                }
+
+                override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+                    playPause()
+                    return super.onMediaButtonEvent(mediaButtonEvent)
+                }
+
+                override fun onSeekTo(pos: Long) {
+                    super.onSeekTo(pos)
+                    setCurrentDurationMediaPlayer(pos.toInt())
+
+                    mediaSession.setPlaybackState(getPlayBackState())
+                }
+            })
+        }
+
         startForeground(notificationId, notification)
     }
 
+    //    test
+    fun getPlayBackState(): PlaybackStateCompat {
+        val playbackSpeed = if (isPlaying.value == true) 1F else 0F
+
+        return PlaybackStateCompat.Builder().setState(
+            if (musicPlayer?.isPlaying == true) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
+            musicPlayer!!.currentPosition.toLong(), playbackSpeed
+        )
+            .setActions(PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+            .build()
+    }
 
     private fun next() {
         val isNextExist = playerRepository.updatePlayerMusicByStep(1)
         if (!isNextExist)
             return
-
         setupMusicPlayer()
+
+        mediaSession.setPlaybackState(getPlayBackState())
     }
 
     private fun previous() {
@@ -140,6 +206,8 @@ class PlayerService : Service() {
             return
 
         setupMusicPlayer()
+        mediaSession.setPlaybackState(getPlayBackState())
+
     }
 
     private fun playPause() {
@@ -155,6 +223,7 @@ class PlayerService : Service() {
         isPlaying.update { musicPlayer?.isPlaying }
 
         sendNotification(currentMusic.value!!)
+        mediaSession.setPlaybackState(getPlayBackState())
     }
 
     private fun setCurrentDurationMediaPlayer(dur: Int) {
