@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class OnlineMusicRepositoryImpl :
     OnlineMusicRepository {
-    private val musicsList: ArrayList<MusicListItemModel> = ArrayList()
+    val musicsList: ArrayList<MusicListItemModel> = ArrayList()
     private val filteredMusicsList: ArrayList<MusicListItemModel> = ArrayList()
 
     override fun getMusicsModelList(): ArrayList<MusicModel> {
@@ -34,9 +34,8 @@ class OnlineMusicRepositoryImpl :
     }
 
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
-        if (filter == null)
-            filteredMusicsList.clear()
-        else
+        filteredMusicsList.clear()
+        if (filter != null)
             musicsList.forEach {
                 if (it.title.contains(
                         Regex(

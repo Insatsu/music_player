@@ -2,6 +2,7 @@ package ru.komarov.player.presentation
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,12 +57,15 @@ class PlayerFragment : Fragment() {
     private fun initListeners() {
         binding.playerFragmentSb.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                vm.setCurDuration(p1)
+            override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser)
+                    vm.setCurDuration(progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}
-            override fun onStopTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+
+            }
         })
 
         binding.playerFragmentBtnPause.setOnClickListener {
@@ -121,7 +125,8 @@ class PlayerFragment : Fragment() {
                     binding.playerFragmentTvMusicAuthor.text =
                         vm.playerRepository.getPlayerMusic().author
 
-                    binding.playerFragmentTvMusicAlbum.text = vm.playerRepository.getPlayerMusic().album
+                    binding.playerFragmentTvMusicAlbum.text =
+                        vm.playerRepository.getPlayerMusic().album
 
                     updatePlayPauseBtn()
                 }
@@ -140,7 +145,6 @@ class PlayerFragment : Fragment() {
             )
         }
     }
-
 
 
     private fun updatePlayPauseBtn(isPlay: Boolean = vm.isPlay.value) {

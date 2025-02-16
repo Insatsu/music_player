@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class OnlineMusicViewModel @Inject constructor(
     private val onlineMusicRepository: OnlineMusicRepository,
-    private val remoteMusicsService: RemoteMusicsService
+    private val remoteMusicsService: RemoteMusicsService,
 ) : ViewModel() {
     private var navigateToPlayer: (() -> Unit)? = null
 
@@ -20,7 +20,6 @@ class OnlineMusicViewModel @Inject constructor(
         val musics: ArrayList<MusicListItemModel> = ArrayList()
         val remoteMusics = remoteMusicsService.getChart()
 
-        var i = 0
         remoteMusics.tracks.data.forEach { remoteMusic ->
             musics.add(
                 getMusicListItemModel(
@@ -31,10 +30,8 @@ class OnlineMusicViewModel @Inject constructor(
                         imageView.load(remoteMusic.album.cover)
                     },
                     link = remoteMusic.preview,
-                    id = i
                 )
             )
-            i++
         }
 
         onlineMusicRepository.loadMusic(musics)
@@ -43,12 +40,11 @@ class OnlineMusicViewModel @Inject constructor(
 
     // Converter from musicItemModel to MusicModel from api
     private fun getMusicListItemModel(
-        id: Int,
         title: String,
         author: String,
         album: String?,
         icon: (ImageView) -> Unit,
-        link: String
+        link: String,
     ): MusicListItemModel {
         return MusicListItemModel(
             title = title,
@@ -57,7 +53,13 @@ class OnlineMusicViewModel @Inject constructor(
             icon = icon,
             onClickListener = {
                 CurrentMusicsList.musicsList = onlineMusicRepository.getMusicsModelList()
-                CurrentMusicsList.currentMusicId = id
+                CurrentMusicsList.currentMusicId =
+                    CurrentMusicsList.musicsList!!.indexOfFirst { curMusic ->
+                        curMusic.title == title &&
+                                curMusic.author == author &&
+                                curMusic.album == album &&
+                                curMusic.musicPath == link
+                    }
                 this.navigateToPlayer!!()
             },
             path = link

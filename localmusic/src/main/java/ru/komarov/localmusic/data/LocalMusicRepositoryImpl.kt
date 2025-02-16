@@ -7,11 +7,15 @@ import ru.komarov.musicslist.domain.MusicListItemModel
 import javax.inject.Inject
 
 class LocalMusicRepositoryImpl @Inject constructor() : LocalMusicRepository {
-    val musicsList: ArrayList<MusicListItemModel> = ArrayList()
+    private val musicsList: ArrayList<MusicListItemModel> = ArrayList()
+
+    private val filteredMusicsIdsList: ArrayList<MusicListItemModel> = ArrayList()
     override fun getLocalFolderPath() = Environment.getExternalStorageDirectory().path + "/Download"
 
     override fun getMusicsModelList(): ArrayList<MusicModel> {
-        val musicModelList: ArrayList<MusicModel> = ArrayList(musicsList.map { musicListItemModel ->
+        val neededList = if (filteredMusicsIdsList.isEmpty()) musicsList else filteredMusicsIdsList
+
+        val musicModelList: ArrayList<MusicModel> = ArrayList(neededList.map { musicListItemModel ->
             MusicModel(
                 title = musicListItemModel.title,
                 author = musicListItemModel.author,
@@ -26,23 +30,30 @@ class LocalMusicRepositoryImpl @Inject constructor() : LocalMusicRepository {
 
 
     override fun loadMusic(musicList: ArrayList<MusicListItemModel>): Boolean {
+        filteredMusicsIdsList.clear()
         musicsList.clear()
         musicsList.addAll(musicList)
         return true
     }
 
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
+        filteredMusicsIdsList.clear()
+        if (filter != null)
+            musicsList.forEach {
+                if (it.title.contains(
+                        Regex(
+                            "$filter",
+                            RegexOption.IGNORE_CASE
+                        )
+                    )
+                ) {
+                    filteredMusicsIdsList.add(it)
+                }
+            }
+
         return when (filter) {
             null -> musicsList
-            else -> ArrayList(musicsList.filter {
-                it.title.contains(
-                    Regex(
-                        "$filter",
-                        RegexOption.IGNORE_CASE
-                    )
-                )
-            })
-
+            else -> filteredMusicsIdsList
         }
     }
 
