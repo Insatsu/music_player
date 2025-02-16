@@ -1,19 +1,32 @@
 package ru.komarov.onlinemusic.data
 
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import ru.komarov.api.MusicModel
-import ru.komarov.api.RemoteMusicsService
 import ru.komarov.musicslist.domain.MusicListItemModel
 import ru.komarov.onlinemusic.domain.OnlineMusicRepository
 import javax.inject.Inject
 
-class OnlineMusicRepositoryImpl :
-    OnlineMusicRepository {
-    val musicsList: ArrayList<MusicListItemModel> = ArrayList()
-    private val filteredMusicsList: ArrayList<MusicListItemModel> = ArrayList()
+class OnlineMusicRepositoryImpl @Inject constructor() : OnlineMusicRepository {
+    private val _musicGetListener: MutableStateFlow<String?> = MutableStateFlow(null)
+    override val musicGetListener: StateFlow<String?> = _musicGetListener.asStateFlow()
+
+    private val isLoaded = MutableStateFlow(false)
+
+    private val musicsList: ArrayList<MusicListItemModel> = ArrayList()
 
     override fun getMusicsModelList(): ArrayList<MusicModel> {
-        val neededList = if (filteredMusicsList.isEmpty()) musicsList else filteredMusicsList
-        val musicModelList: ArrayList<MusicModel> = ArrayList(neededList.map { musicListItemModel ->
+        val musicModelList: ArrayList<MusicModel> = ArrayList(musicsList.map { musicListItemModel ->
             MusicModel(
                 title = musicListItemModel.title,
                 author = musicListItemModel.author,
@@ -30,28 +43,27 @@ class OnlineMusicRepositoryImpl :
     override fun loadMusic(musicList: ArrayList<MusicListItemModel>): Boolean {
         musicsList.clear()
         musicsList.addAll(musicList)
+        isLoaded.update { true }
         return true
     }
 
+    // Get music. Wait until musics loaded and then return it
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
-        filteredMusicsList.clear()
-        if (filter != null)
-            musicsList.forEach {
-                if (it.title.contains(
-                        Regex(
-                            "$filter",
-                            RegexOption.IGNORE_CASE
-                        )
-                    )
-                ) {
-                    filteredMusicsList.add(it)
+        _musicGetListener.update {
+            filter
+        }
+
+        runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
+                isLoaded.asStateFlow().filter { it }.collectLatest {
+                    this.coroutineContext.cancel()
                 }
             }
-
-        return when (filter) {
-            null -> musicsList
-            else -> filteredMusicsList
-
         }
+
+        isLoaded.update { false }
+
+        return musicsList
     }
+
 }

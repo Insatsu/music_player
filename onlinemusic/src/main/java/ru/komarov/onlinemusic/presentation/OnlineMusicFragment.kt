@@ -13,6 +13,9 @@ import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.komarov.musicslist.di.MusicListDeps
@@ -36,14 +39,16 @@ class OnlineMusicFragment : Fragment(), MusicListFragmentParent {
     private val binding get() = _binding!!
 
     override fun onAttach(context: Context) {
-        ViewModelProvider(this).get<OnlineMusicComponentViewModel>().onlineMusicComponent.inject(this)
+        ViewModelProvider(this).get<OnlineMusicComponentViewModel>().onlineMusicComponent.inject(
+            this
+        )
 
         super.onAttach(context)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentOnlineMusicBinding.inflate(inflater, container, false)
 
@@ -57,15 +62,30 @@ class OnlineMusicFragment : Fragment(), MusicListFragmentParent {
         vm.setNavigateToPlayer {
             findNavController().navigate(Uri.parse(getString(ru.komarov.api.R.string.nav_to_player)))
         }
+        vm.loadMusicFromApi()
         CoroutineScope(Dispatchers.IO).launch {
-            vm.loadMusicFromApi()
-            withContext(Dispatchers.Main) {
-                childFragmentManager.setFragmentResult(
-                    RequestKey,
-                    bundleOf(BundlesKey to SuccessResultMessage)
-                )
-            }
+            vm.isLoaded.asStateFlow().filter { it }.collectLatest(
+                {
+                    withContext(Dispatchers.Main) {
+                        childFragmentManager.setFragmentResult(
+                            RequestKey,
+                            bundleOf(BundlesKey to SuccessResultMessage)
+                        )
+                    }
+                }
+            )
         }
+
+
+//        CoroutineScope(Dispatchers.IO).launch {
+//            vm.loadMusicFromApi()
+//            withContext(Dispatchers.Main) {
+//                childFragmentManager.setFragmentResult(
+//                    RequestKey,
+//                    bundleOf(BundlesKey to SuccessResultMessage)
+//                )
+//            }
+//        }
     }
 
 }

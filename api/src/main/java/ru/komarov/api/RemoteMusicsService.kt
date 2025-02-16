@@ -17,7 +17,7 @@ interface RemoteMusicsService {
     suspend fun getMusicById(@Path("id") id: Int): RemoteMusic
 
     @GET("search")
-    suspend fun getMusicBySearch(@Query("q") query: String)
+    suspend fun getMusicBySearch(@Query("q") query: String): RemoteTracks
 
 }
 
