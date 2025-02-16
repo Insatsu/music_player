@@ -8,7 +8,9 @@ interface PlayerRepository {
     fun getCurrentMusicIdFlow(): Flow<Any>
     fun getPlayableStateFlow(): Flow<Boolean?>?
     fun getMaxDurationStateFlow(): Flow<Int?>?
-//    fun getCurrentDurationStateFlow(): Flow<Int?>?
+
+    fun setCurrentPlayerDuration(duration: Int)
+    fun getCurrentPlayerDuration(): Int
 
     fun getCurrentDurationStateFlow(): Int?
 

@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="player_tv_style">
+    <style name="player_tv_sb_info">
+        <item name="android:layout_height">
+            wrap_content
+        </item>
+        <item name="android:layout_width">
+            wrap_content
+        </item>
+        <item name="android:layout_marginStart">
+            20dp
+        </item>
+        <item name="android:layout_marginEnd">
+            20dp
+        </item>
+        <item name="maxLines">
+            1
+        </item>
+    </style>
+
+    <style name="player_tv_music_info_style">
         <item name="android:layout_height">
             wrap_content
         </item>
@@ -16,11 +34,11 @@
         </item>
     </style>
 
-    <style name="player_tv_title_style" parent="player_tv_style">
+    <style name="player_tv_title_style" parent="player_tv_music_info_style">
 
     </style>
 
-    <style name="player_tv_music_title_style" parent="player_tv_style">
+    <style name="player_tv_music_title_style" parent="player_tv_music_info_style">
         <item name="android:textSize">
             25sp
         </item>
@@ -28,7 +46,7 @@
     </style>
 
 
-    <style name="player_tv_music_author_style" parent="player_tv_style">
+    <style name="player_tv_music_author_style" parent="player_tv_music_info_style">
         <item name="android:textSize">
             15sp
         </item>

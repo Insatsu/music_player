@@ -26,6 +26,7 @@ class PlayerRepositoryImpl @Inject constructor(private val playerServiceControll
     PlayerRepository, MusicController {
     private var musicArrayList: ArrayList<MusicModel> = ArrayList()
     private var currentMusicId = MutableStateFlow(0)
+    private var curDur = 0
 
     override fun getCurrentMusicIdFlow(): Flow<Any> {
         return currentMusicId as MutableStateFlow<Any>
@@ -40,9 +41,15 @@ class PlayerRepositoryImpl @Inject constructor(private val playerServiceControll
         return playerServiceController.maxDuration
     }
 
-//    override fun getCurrentDurationStateFlow(): Flow<Int?>? {
-//        return playerServiceController.currentDuration
-//    }
+    override fun setCurrentPlayerDuration(duration: Int) {
+        curDur = duration
+        playerServiceController.sendActionToService(PlayerService.ACTION_SET_CUR_DUR)
+    }
+
+    override fun getCurrentPlayerDuration(): Int {
+        return curDur
+    }
+
 
     override fun getCurrentDurationStateFlow(): Int? {
         return playerServiceController.currentDuration

@@ -16,7 +16,6 @@ import javax.inject.Inject
 interface PlayerServiceController {
 
     val maxDuration: MutableStateFlow<Int?>?
-//    val currentDuration: MutableStateFlow<Int?>?
     val currentDuration: Int?
     val isPlaying : MutableStateFlow<Boolean?>?
     val isBounded : Boolean

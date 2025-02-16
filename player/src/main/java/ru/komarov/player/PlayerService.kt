@@ -98,6 +98,10 @@ class PlayerService : Service() {
                         play(currentMusic.value!!)
                 }
 
+                ACTION_SET_CUR_DUR ->{
+                    setCurDur(playerRepository.getCurrentPlayerDuration())
+                }
+
                 else -> {
                     currentMusic.update { playerRepository.getPlayerMusic() }
                     if (currentMusic.value != null)
@@ -109,6 +113,9 @@ class PlayerService : Service() {
         return START_STICKY
     }
 
+    private fun setCurDur(dur: Int){
+        musicPlayer?.seekTo(dur)
+    }
 
     private fun sendNotification(music: MusicModel) {
         if (musicPlayer == null) {
@@ -137,11 +144,10 @@ class PlayerService : Service() {
             .setSound(null)
             .build()
 
-        Log.d("notif", "start")
         startForeground(notificationId, notification)
     }
 
-    fun createPreviousPendingIntent(): PendingIntent {
+    private fun createPreviousPendingIntent(): PendingIntent {
         val intent = Intent(this, PlayerService::class.java).apply {
             action = ACTION_PREVIOUS
         }
@@ -154,7 +160,7 @@ class PlayerService : Service() {
         )
     }
 
-    fun createNextPendingIntent(): PendingIntent {
+    private fun createNextPendingIntent(): PendingIntent {
         val intent = Intent(this, PlayerService::class.java).apply {
             action = ACTION_NEXT
         }
@@ -162,7 +168,7 @@ class PlayerService : Service() {
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
-    fun createPlayPausePendingIntent(): PendingIntent {
+    private fun createPlayPausePendingIntent(): PendingIntent {
         val intent = Intent(this, PlayerService::class.java).apply {
             action = ACTION_PLAY_PAUSE
         }
@@ -171,7 +177,7 @@ class PlayerService : Service() {
     }
 
 
-    fun next() {
+    private fun next() {
         val isNextExist = playerRepository.updatePlayerMusicByStep(1)
         if (!isNextExist)
             return
@@ -179,7 +185,7 @@ class PlayerService : Service() {
         setupMusicPlayer()
     }
 
-    fun previous() {
+    private fun previous() {
         val isPreviousExist = playerRepository.updatePlayerMusicByStep(-1)
         if (!isPreviousExist)
             return
@@ -188,7 +194,7 @@ class PlayerService : Service() {
     }
 
 
-    fun playPause() {
+    private fun playPause() {
         Log.d("Service", "playPause: ${musicPlayer}")
 
         if (musicPlayer == null) {
@@ -210,7 +216,7 @@ class PlayerService : Service() {
     }
 
 
-    fun play(music: MusicModel) {
+    private fun play(music: MusicModel) {
         musicPlayer = MediaPlayer()
         updateMusicPlayer(music)
 
@@ -234,11 +240,6 @@ class PlayerService : Service() {
 //        updateMaxDuration()
     }
 
-//    private fun updateCurrentDuration() {
-////        currentDuration.update {
-////            musicPlayer?.currentPosition
-////        }
-//    }
 
     private fun updateMaxDuration() {
         Log.d("Service", "max dur: ${musicPlayer?.duration}")
@@ -266,5 +267,6 @@ class PlayerService : Service() {
         const val ACTION_PREVIOUS = "action_previous"
         const val ACTION_STOP = "action_stop"
         const val ACTION_UPDATE = "action_update"
+        const val ACTION_SET_CUR_DUR = "action_set_cur_dur"
     }
 }

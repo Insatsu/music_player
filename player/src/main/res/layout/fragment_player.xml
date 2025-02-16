@@ -50,20 +50,20 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/player_fragment__tv_music_title"
         style="@style/player_tv_music_title_style"
-        tools:text="@string/player_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_fragment__iv" />
+        app:layout_constraintTop_toBottomOf="@id/player_fragment__iv"
+        tools:text="@string/player_title" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/player_fragment__tv_music_author"
         style="@style/player_tv_music_author_style"
         android:layout_marginBottom="30dp"
-        tools:text="@string/player_title"
         app:layout_constraintBottom_toTopOf="@id/player_fragment__cl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_fragment__tv_music_title" />
+        app:layout_constraintTop_toBottomOf="@id/player_fragment__tv_music_title"
+        tools:text="@string/player_title" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,11 +77,28 @@
         <SeekBar
             android:id="@+id/player_fragment__sb"
             style="@style/player_sb_style"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             app:layout_constraintBottom_toTopOf="@id/player_fragment__brr_btn_top"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/player_fragment__tv_cur_duration"
+            style="@style/player_tv_sb_info"
+            app:layout_constraintBottom_toTopOf="@id/player_fragment__brr_btn_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/player_fragment__sb"
+            tools:text="asfgafg" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/player_fragment__tv_max_duration"
+            style="@style/player_tv_sb_info"
+            app:layout_constraintBottom_toTopOf="@id/player_fragment__brr_btn_top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/player_fragment__sb"
+            tools:text="asfgafg"
+            />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/player_fragment__brr_btn_top"

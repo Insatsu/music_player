@@ -6,16 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.komarov.player.R
@@ -24,16 +24,16 @@ import ru.komarov.player.di.PlayerComponentViewModel
 import ru.komarov.player.di.PlayerMusicDeps
 import ru.komarov.player.domain.PlayerRepository
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 class PlayerFragment : Fragment() {
     @Inject
     lateinit var deps: PlayerMusicDeps
 
+    @Inject
+    lateinit var vm: PlayerViewModel
+
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
-
-    private val playerRepository: PlayerRepository get() = deps.playerRepository
 
     private val coroutineScope = lifecycleScope
 
@@ -45,122 +45,105 @@ class PlayerFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
 
-        updatePlayPauseBtn()
 
         flowUpdateFragmentOnSwitch()
         flowUpdateBtnPlayPause()
         flowUpdateSb()
 
-        coroutineScope.launch {
-            while (playerRepository.getCurrentDurationStateFlow() == null) {
-                delay(200)
-            }
-            while (playerRepository.getPlayableStateFlow() == null) {
-                delay(200)
-            }
+        flowUpdateSbCurrent()
 
-
-            playerRepository.getPlayableStateFlow()?.collect(
-                collector = {
-//                  TODO: this not works. fix
-                    if (it == false)
-                        return@collect
-                    while (isVisible) {
-                        Log.d("sb", "true")
-                        delay(1000)
-                        if (playerRepository.getCurrentDurationStateFlow() != null)
-                            binding.playerFragmentSb.progress =
-                                playerRepository.getCurrentDurationStateFlow()!! / 1000
-                    }
-                }
-            )
-        }
+        binding.playerFragmentSb.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                vm.setCurDuration(p1)
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
 
         binding.playerFragmentBtnPause.setOnClickListener {
-            playerRepository.playMusic()
-            updatePlayPauseBtn()
+            vm.playerRepository.playMusic()
+            updatePlayPauseBtn(vm.isPlay.value)
         }
 
         binding.playerFragmentBtnNext.setOnClickListener {
-            playerRepository.nextPlayMusic()
-            updatePlayPauseBtn()
+            vm.playerRepository.nextPlayMusic()
+            updatePlayPauseBtn(vm.isPlay.value)
 
         }
 
         binding.playerFragmentBtnPrevious.setOnClickListener {
-            playerRepository.previousPlayMusic()
-            updatePlayPauseBtn()
+            vm.playerRepository.previousPlayMusic()
+            updatePlayPauseBtn(vm.isPlay.value)
 
         }
-
 
 
         return binding.root
     }
 
-    private fun flowUpdateSb() {
+    private fun flowUpdateSbCurrent() {
+        vm.flowUpdateSbCurrent()
         coroutineScope.launch {
-            while (playerRepository.getMaxDurationStateFlow() == null) {
-                delay(200)
-            }
-            playerRepository.getMaxDurationStateFlow()?.collect(
+            vm.curDuration.asStateFlow().collect(
                 collector = {
-                    withContext(Dispatchers.Main) {
-                        Log.d("sb", "max: $it")
-                        if (it != null)
-                            binding.playerFragmentSb.max = it / 1000
-                    }
+                    binding.playerFragmentSb.progress = it
+                    binding.playerFragmentTvCurDuration.text = vm.getMmSsFromS(it)
                 }
             )
         }
     }
 
-    private fun flowUpdateFragmentOnSwitch() {
+    private fun flowUpdateSb() {
+        vm.flowUpdateMaxSb()
         coroutineScope.launch {
-            playerRepository.getCurrentMusicIdFlow().collect(
+            vm.maxDuration.asStateFlow().collect(
                 collector = {
-                    withContext(Dispatchers.Main) {
-                        Log.d("btn", "collect шв:}")
+                    binding.playerFragmentSb.max = it
+                    binding.playerFragmentTvMaxDuration.text = vm.getMmSsFromS(it)
+                }
+            )
+        }
+    }
 
-                        playerRepository.getPlayerMusic().icon?.let { it(binding.playerFragmentIv) }
-                        binding.playerFragmentTvMusicTitle.text =
-                            playerRepository.getPlayerMusic().title
-                        binding.playerFragmentTvMusicAuthor.text =
-                            playerRepository.getPlayerMusic().author
-                    }
 
-                    flowUpdateBtnPlayPause()
-                    flowUpdateSb()
+    private fun flowUpdateFragmentOnSwitch() {
+        vm.flowUpdateFragmentOnSwitch()
+        coroutineScope.launch {
+            vm.curMusicId.asStateFlow().collect(
+                collector = { curMusicId ->
+                    vm.playerRepository.getPlayerMusic().icon?.let { it(binding.playerFragmentIv) }
+                    binding.playerFragmentTvMusicTitle.text =
+                        vm.playerRepository.getPlayerMusic().title
+                    binding.playerFragmentTvMusicAuthor.text =
+                        vm.playerRepository.getPlayerMusic().author
+
+                    updatePlayPauseBtn()
                 }
             )
         }
     }
 
     private fun flowUpdateBtnPlayPause() {
+        vm.flowUpdateBtnPlayPause()
         coroutineScope.launch {
-            while (playerRepository.getPlayableStateFlow() == null) {
-                delay(200)
-            }
-            playerRepository.getPlayableStateFlow()?.collect(
-                collector = {
-                    withContext(Dispatchers.Main) {
-                        Log.d("btn", "collect: ${playerRepository.isPlaying()}")
-                        updatePlayPauseBtn()
-                    }
+            vm.isPlay.asStateFlow().collect(
+                collector = { isPlay ->
+                    updatePlayPauseBtn(isPlay)
                 }
             )
         }
     }
 
-    private fun updatePlayPauseBtn() {
+    private fun updatePlayPauseBtn(isPlay: Boolean = vm.isPlay.value) {
         binding.playerFragmentBtnPause.setImageDrawable(
             ResourcesCompat.getDrawable(
                 resources,
-                if (playerRepository.isPlaying()) R.drawable.baseline_pause_24 else R.drawable.baseline_play_arrow_24,
+                if (isPlay) R.drawable.baseline_pause_24 else R.drawable.baseline_play_arrow_24,
                 null
             ),
         )
