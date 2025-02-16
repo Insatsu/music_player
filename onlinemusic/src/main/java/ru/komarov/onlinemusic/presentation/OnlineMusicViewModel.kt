@@ -32,6 +32,7 @@ class OnlineMusicViewModel @Inject constructor(
                 getMusicListItemModel(
                     title = remoteMusic.title,
                     author = remoteMusic.artist.name,
+                    album = remoteMusic.album.title,
                     icon = { imageView ->
                         imageView.load(remoteMusic.album.cover)
                     },
@@ -52,12 +53,14 @@ class OnlineMusicViewModel @Inject constructor(
         id: Int,
         title: String,
         author: String,
+        album: String?,
         icon: (ImageView) -> Unit,
         link: String
     ): MusicListItemModel {
         return MusicListItemModel(
             title = title,
             author = author,
+            album = album,
             icon = icon,
             onClickListener = {
                 CurrentMusicsList.musicsList = onlineMusicRepository.getMusicsModelList()

@@ -9,13 +9,15 @@ import javax.inject.Inject
 class OnlineMusicRepositoryImpl @Inject constructor(remoteMusicsService: RemoteMusicsService) :
     OnlineMusicRepository {
     val musicsList: ArrayList<MusicListItemModel> = ArrayList()
-
+    private val filteredMusicsList: ArrayList<MusicListItemModel> = ArrayList()
 
     override fun getMusicsModelList(): ArrayList<MusicModel> {
-        val musicModelList: ArrayList<MusicModel> = ArrayList(musicsList.map { musicListItemModel ->
+        val neededList = if (filteredMusicsList.isEmpty()) musicsList else filteredMusicsList
+        val musicModelList: ArrayList<MusicModel> = ArrayList(neededList.map { musicListItemModel ->
             MusicModel(
                 title = musicListItemModel.title,
                 author = musicListItemModel.author,
+                album = musicListItemModel.album,
                 icon = musicListItemModel.icon,
                 musicPath = musicListItemModel.path
             )
@@ -32,17 +34,24 @@ class OnlineMusicRepositoryImpl @Inject constructor(remoteMusicsService: RemoteM
     }
 
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
+        if (filter == null)
+            filteredMusicsList.clear()
+        else
+            musicsList.forEach {
+                if (it.title.contains(
+                        Regex(
+                            "$filter",
+                            RegexOption.IGNORE_CASE
+                        )
+                    )
+                ) {
+                    filteredMusicsList.add(it)
+                }
+            }
 
         return when (filter) {
             null -> musicsList
-            else -> ArrayList(musicsList.filter {
-                it.title.contains(
-                    Regex(
-                        "$filter",
-                        RegexOption.IGNORE_CASE
-                    )
-                )
-            })
+            else -> filteredMusicsList
 
         }
     }

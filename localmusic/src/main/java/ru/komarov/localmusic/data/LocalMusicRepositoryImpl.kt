@@ -15,6 +15,7 @@ class LocalMusicRepositoryImpl @Inject constructor() : LocalMusicRepository {
             MusicModel(
                 title = musicListItemModel.title,
                 author = musicListItemModel.author,
+                album = musicListItemModel.album,
                 icon = musicListItemModel.icon,
                 musicPath = musicListItemModel.path
             )
