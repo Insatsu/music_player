@@ -69,6 +69,9 @@ class MainActivity : AppCompatActivity() {
                 if (CurrentMusicsList.musicsList == null)
                     return@addOnDestinationChangedListener
 
+                if(CurrentMusicsList.currentMusicId == -1){
+
+                }
 
                 musicController.setMusicList(
                     CurrentMusicsList.musicsList!!,

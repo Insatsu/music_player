@@ -103,13 +103,13 @@ class OnlineMusicViewModel @Inject constructor(
             album = album,
             icon = icon,
             onClickListener = {
-                CurrentMusicsList.musicsList = onlineMusicRepository.getMusicsModelList()
+                val _list = onlineMusicRepository.getMusicsModelList()
+                CurrentMusicsList.musicsList = _list
                 CurrentMusicsList.currentMusicId =
-                    CurrentMusicsList.musicsList!!.indexOfFirst { curMusic ->
+                    _list.indexOfFirst { curMusic ->
                         curMusic.title == title &&
                                 curMusic.author == author &&
-                                curMusic.album == album &&
-                                curMusic.musicPath == link
+                                curMusic.album == album
                     }
                 this.navigateToPlayer!!()
             },
