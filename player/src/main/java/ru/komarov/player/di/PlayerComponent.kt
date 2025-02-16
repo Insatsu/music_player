@@ -8,7 +8,6 @@ import ru.komarov.player.presentation.PlayerFragment
 import javax.inject.Scope
 
 // Player component with its dependencies
-
 @PlayerScope
 @Component(dependencies = [PlayerMusicDeps::class])
 interface PlayerComponent {
