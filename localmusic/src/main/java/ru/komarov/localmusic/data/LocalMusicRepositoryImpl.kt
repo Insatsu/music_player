@@ -30,15 +30,15 @@ class LocalMusicRepositoryImpl @Inject constructor() : LocalMusicRepository {
 
 
     override fun loadMusic(musicList: ArrayList<MusicListItemModel>): Boolean {
+        filteredMusicsIdsList.clear()
         musicsList.clear()
         musicsList.addAll(musicList)
         return true
     }
 
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
-        if (filter == null)
-            filteredMusicsIdsList.clear()
-        else
+        filteredMusicsIdsList.clear()
+        if (filter != null)
             musicsList.forEach {
                 if (it.title.contains(
                         Regex(

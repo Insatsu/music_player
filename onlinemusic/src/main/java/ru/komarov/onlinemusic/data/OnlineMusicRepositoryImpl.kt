@@ -34,9 +34,8 @@ class OnlineMusicRepositoryImpl @Inject constructor(remoteMusicsService: RemoteM
     }
 
     override fun getMusic(filter: String?): ArrayList<MusicListItemModel> {
-        if (filter == null)
-            filteredMusicsList.clear()
-        else
+        filteredMusicsList.clear()
+        if (filter != null)
             musicsList.forEach {
                 if (it.title.contains(
                         Regex(

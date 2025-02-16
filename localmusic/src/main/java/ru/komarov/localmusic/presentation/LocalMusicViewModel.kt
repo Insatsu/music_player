@@ -13,7 +13,7 @@ import java.io.FileFilter
 import javax.inject.Inject
 
 class LocalMusicViewModel @Inject constructor(
-    private val localMusicRepository: LocalMusicRepository
+    private val localMusicRepository: LocalMusicRepository,
 ) :
     ViewModel() {
 
@@ -45,7 +45,6 @@ class LocalMusicViewModel @Inject constructor(
                 val albumArt = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.size)
                 musicModels.add(
                     getMusicListItemModel(
-                        id = id,
                         title = title, author = author,
                         album = album,
                         icon = { imageView ->
@@ -58,7 +57,6 @@ class LocalMusicViewModel @Inject constructor(
             } else {
                 musicModels.add(
                     getMusicListItemModel(
-                        id = id,
                         title = title, author = author,
                         album = album,
                         icon = { imageView ->
@@ -94,12 +92,11 @@ class LocalMusicViewModel @Inject constructor(
 
 
     private fun getMusicListItemModel(
-        id: Int,
         title: String,
         author: String,
         album: String?,
         icon: (ImageView) -> Unit,
-        filePath: String
+        filePath: String,
     ): MusicListItemModel {
         return MusicListItemModel(
             title = title,
@@ -108,8 +105,14 @@ class LocalMusicViewModel @Inject constructor(
             icon = icon,
             onClickListener = {
                 CurrentMusicsList.musicsList = localMusicRepository.getMusicsModelList()
-                CurrentMusicsList.currentMusicId = id
-                    this.navigateToPlayer!!()
+                CurrentMusicsList.currentMusicId =
+                    CurrentMusicsList.musicsList!!.indexOfFirst { curMusic ->
+                        curMusic.title == title &&
+                                curMusic.author == author &&
+                                curMusic.album == album &&
+                                curMusic.musicPath == filePath
+                    }
+                this.navigateToPlayer!!()
             },
             path = filePath
         )

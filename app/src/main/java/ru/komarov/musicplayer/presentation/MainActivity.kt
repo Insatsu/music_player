@@ -77,8 +77,6 @@ class MainActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     musicController.startService()
-
-
                 }
                 CurrentMusicsList.musicsList = null
                 CurrentMusicsList.currentMusicId = null
