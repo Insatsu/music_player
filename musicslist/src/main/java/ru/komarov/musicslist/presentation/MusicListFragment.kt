@@ -21,7 +21,7 @@ import ru.komarov.musicslist.domain.RequestKey
 import ru.komarov.musicslist.domain.SuccessResultMessage
 import javax.inject.Inject
 
-// Родительский фрагмент должен реализовывать интерфейс [MusicListFragmentParent] для успешного их взаимодействия
+// The parent fragment must implement the [MusicListFragmentParent] interface for their successful interaction
 class MusicListFragment : Fragment() {
     @Inject
     lateinit var musicListViewModelFactory: Lazy<MusicListViewModelFactory>
@@ -62,6 +62,7 @@ class MusicListFragment : Fragment() {
         return binding.root
     }
 
+    // Listener messages from parent and update fragment
     private fun updateListener() {
         parentFragmentManager.setFragmentResultListener(
             RequestKey,

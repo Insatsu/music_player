@@ -1,14 +1,13 @@
 package ru.komarov.musicslist.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.komarov.musicslist.R
-import ru.komarov.musicslist.domain.MusicListItemModel
 import ru.komarov.musicslist.databinding.MusicListItemBinding
+import ru.komarov.musicslist.domain.MusicListItemModel
 
 class MusicListAdapter : RecyclerView.Adapter<MusicListAdapter.MusicListViewHolder>() {
     private val musicsList = ArrayList<MusicListItemModel>()

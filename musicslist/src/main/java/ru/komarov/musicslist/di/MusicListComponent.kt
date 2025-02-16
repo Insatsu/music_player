@@ -10,7 +10,7 @@ import javax.inject.Scope
 
 @MusicListScope
 @Component(
-    modules = [DataModule::class, FragmentModule::class],
+    modules = [FragmentModule::class],
     dependencies = [MusicListDeps::class]
 )
 internal interface MusicListComponent {
