@@ -3,7 +3,6 @@ package ru.komarov.onlinemusic.presentation
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
-import coil3.load
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.komarov.musicslist.di.MusicListDeps
 import ru.komarov.musicslist.domain.BundlesKey
 import ru.komarov.musicslist.domain.MusicListFragmentParent
-import ru.komarov.musicslist.domain.MusicListItemModel
 import ru.komarov.musicslist.domain.RequestKey
 import ru.komarov.musicslist.domain.SuccessResultMessage
-import ru.komarov.onlinemusic.R
 import ru.komarov.onlinemusic.databinding.FragmentOnlineMusicBinding
 import ru.komarov.onlinemusic.di.OnlineMusicComponentViewModel
 import javax.inject.Inject
@@ -57,12 +52,13 @@ class OnlineMusicFragment : Fragment(), MusicListFragmentParent {
         return binding.root
     }
 
+    // Init get music list from api
     private fun initMusicList() {
         vm.setNavigateToPlayer {
             findNavController().navigate(Uri.parse(getString(ru.komarov.api.R.string.nav_to_player)))
         }
         CoroutineScope(Dispatchers.IO).launch {
-            vm.loadMusicFromDownload()
+            vm.loadMusicFromApi()
             withContext(Dispatchers.Main) {
                 childFragmentManager.setFragmentResult(
                     RequestKey,

@@ -6,9 +6,9 @@ import ru.komarov.musicslist.domain.MusicListItemModel
 import ru.komarov.onlinemusic.domain.OnlineMusicRepository
 import javax.inject.Inject
 
-class OnlineMusicRepositoryImpl @Inject constructor(remoteMusicsService: RemoteMusicsService) :
+class OnlineMusicRepositoryImpl :
     OnlineMusicRepository {
-    val musicsList: ArrayList<MusicListItemModel> = ArrayList()
+    private val musicsList: ArrayList<MusicListItemModel> = ArrayList()
     private val filteredMusicsList: ArrayList<MusicListItemModel> = ArrayList()
 
     override fun getMusicsModelList(): ArrayList<MusicModel> {

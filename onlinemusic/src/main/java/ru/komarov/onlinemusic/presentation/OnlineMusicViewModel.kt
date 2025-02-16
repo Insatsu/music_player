@@ -1,7 +1,5 @@
 package ru.komarov.onlinemusic.presentation
 
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import coil3.load
@@ -9,8 +7,6 @@ import ru.komarov.api.CurrentMusicsList
 import ru.komarov.api.RemoteMusicsService
 import ru.komarov.musicslist.domain.MusicListItemModel
 import ru.komarov.onlinemusic.domain.OnlineMusicRepository
-import java.io.File
-import java.io.FileFilter
 import javax.inject.Inject
 
 class OnlineMusicViewModel @Inject constructor(
@@ -20,11 +16,9 @@ class OnlineMusicViewModel @Inject constructor(
     private var navigateToPlayer: (() -> Unit)? = null
 
 
-    suspend fun loadMusicFromDownload() {
+    suspend fun loadMusicFromApi() {
         val musics: ArrayList<MusicListItemModel> = ArrayList()
-
         val remoteMusics = remoteMusicsService.getChart()
-
 
         var i = 0
         remoteMusics.tracks.data.forEach { remoteMusic ->
@@ -36,7 +30,6 @@ class OnlineMusicViewModel @Inject constructor(
                     icon = { imageView ->
                         imageView.load(remoteMusic.album.cover)
                     },
-//                    link = remoteMusic.link,
                     link = remoteMusic.preview,
                     id = i
                 )
@@ -44,11 +37,11 @@ class OnlineMusicViewModel @Inject constructor(
             i++
         }
 
-
         onlineMusicRepository.loadMusic(musics)
     }
 
 
+    // Converter from musicItemModel to MusicModel from api
     private fun getMusicListItemModel(
         id: Int,
         title: String,
