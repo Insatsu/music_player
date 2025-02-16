@@ -5,37 +5,25 @@ import dagger.Component
 import ru.komarov.localmusic.presentation.LocalMusicFragment
 import javax.inject.Scope
 
-
+// Local music component with its module
 @LocalMusicScope
-@Component(modules = [DataModule::class], dependencies = [LocalMusicDeps::class])
+@Component(modules = [DataModule::class])
 internal interface LocalMusicComponent {
 
     fun inject(fragment: LocalMusicFragment)
 
     @Component.Builder
     interface Builder {
-
-        fun deps(localMusicDeps: LocalMusicDeps): Builder
-
         fun build(): LocalMusicComponent
     }
-
-
 }
 
 
-interface LocalMusicDeps {
-}
-
-
-object LocalMusicDepsStore {
-    lateinit var deps: LocalMusicDeps
-}
-
-
+// Viewmodel for save localMusicComponent on all lifecycle and to inject fragment
 internal class LocalMusicComponentViewModel : ViewModel() {
     val localMusicComponent =
-        DaggerLocalMusicComponent.builder().deps(LocalMusicDepsStore.deps).build()
+//        DaggerLocalMusicComponent.builder().deps(LocalMusicDepsStore.deps).build()
+        DaggerLocalMusicComponent.builder().build()
 
 }
 

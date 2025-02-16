@@ -1,13 +1,10 @@
 package ru.komarov.musicplayer
 
 import android.app.Application
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import ru.komarov.api.RemoteMusicsService
-import ru.komarov.localmusic.di.LocalMusicDeps
-import ru.komarov.localmusic.di.LocalMusicDepsStore
 import ru.komarov.musicplayer.di.AppComponent
 import ru.komarov.musicplayer.di.DaggerAppComponent
 import ru.komarov.onlinemusic.di.OnlineMusicDeps
@@ -29,7 +26,7 @@ class App : Application() {
             .context(this)
             .build()
 
-        LocalMusicDepsStore.deps = LocalMusicDepsImpl()
+//        LocalMusicDepsStore.deps = LocalMusicDepsImpl()
         OnlineMusicDepsStore.deps = OnlineMusicDepsImpl(appComponent.musicService)
         PlayerMusicDepsStore.deps = PlayerMusicDepsImpl(appComponent.playerRepository)
 
@@ -46,9 +43,9 @@ class App : Application() {
             notManager.createNotificationChannel(channel)
         }
     }
-
-    class LocalMusicDepsImpl : LocalMusicDeps {
-    }
+//
+//    class LocalMusicDepsImpl : LocalMusicDeps {
+//    }
 
     class OnlineMusicDepsImpl(override val musicService: RemoteMusicsService) : OnlineMusicDeps
 

@@ -2,28 +2,24 @@ package ru.komarov.localmusic.presentation
 
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.os.Environment
-import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import ru.komarov.api.CurrentMusicsList
 import ru.komarov.localmusic.R
 import ru.komarov.localmusic.domain.LocalMusicRepository
-import ru.komarov.musicslist.di.MusicListDeps
 import ru.komarov.musicslist.domain.MusicListItemModel
 import java.io.File
 import java.io.FileFilter
 import javax.inject.Inject
 
 class LocalMusicViewModel @Inject constructor(
-//    private val musicListDeps: MusicListDeps
     private val localMusicRepository: LocalMusicRepository
-
 ) :
     ViewModel() {
 
     private var navigateToPlayer: (() -> Unit)? = null
 
+    // Get musics data from its file path by MediaMetadataRetriever
     private fun musicMetaDataLoadInDeps(musics: ArrayList<String>): ArrayList<MusicListItemModel> {
         val mmr = MediaMetadataRetriever()
         val musicModels: ArrayList<MusicListItemModel> = ArrayList()
@@ -40,12 +36,18 @@ class LocalMusicViewModel @Inject constructor(
                     ?: mmr.extractMetadata(
                         MediaMetadataRetriever.METADATA_KEY_ARTIST
                     ) ?: "Unknown"
+
+            val album = mmr.extractMetadata(
+                MediaMetadataRetriever.METADATA_KEY_ALBUM
+            )
+            // If music has image set it else set default
             if (artBytes != null) {
                 val albumArt = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.size)
                 musicModels.add(
                     getMusicListItemModel(
                         id = id,
                         title = title, author = author,
+                        album = album,
                         icon = { imageView ->
                             imageView.setImageBitmap(albumArt)
                         },
@@ -58,6 +60,7 @@ class LocalMusicViewModel @Inject constructor(
                     getMusicListItemModel(
                         id = id,
                         title = title, author = author,
+                        album = album,
                         icon = { imageView ->
                             imageView.setImageResource(R.drawable.baseline_auto_awesome_24)
                         },
@@ -94,12 +97,14 @@ class LocalMusicViewModel @Inject constructor(
         id: Int,
         title: String,
         author: String,
+        album: String?,
         icon: (ImageView) -> Unit,
         filePath: String
     ): MusicListItemModel {
         return MusicListItemModel(
             title = title,
             author = author,
+            album = album,
             icon = icon,
             onClickListener = {
                 CurrentMusicsList.musicsList = localMusicRepository.getMusicsModelList()
