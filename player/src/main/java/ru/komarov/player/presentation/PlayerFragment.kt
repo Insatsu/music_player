@@ -2,7 +2,6 @@ package ru.komarov.player.presentation
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,23 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.komarov.player.R
 import ru.komarov.player.databinding.FragmentPlayerBinding
 import ru.komarov.player.di.PlayerComponentViewModel
-import ru.komarov.player.di.PlayerMusicDeps
-import ru.komarov.player.domain.PlayerRepository
 import javax.inject.Inject
 
 class PlayerFragment : Fragment() {
-    @Inject
-    lateinit var deps: PlayerMusicDeps
-
     @Inject
     lateinit var vm: PlayerViewModel
 
@@ -49,18 +39,27 @@ class PlayerFragment : Fragment() {
     ): View {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
 
-
         flowUpdateFragmentOnSwitch()
+
         flowUpdateBtnPlayPause()
+
         flowUpdateSb()
 
         flowUpdateSbCurrent()
 
+        initListeners()
+
+        return binding.root
+    }
+
+    // Set listeners on buttons and seekbar
+    private fun initListeners() {
         binding.playerFragmentSb.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 vm.setCurDuration(p1)
             }
+
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
@@ -81,11 +80,9 @@ class PlayerFragment : Fragment() {
             updatePlayPauseBtn(vm.isPlay.value)
 
         }
-
-
-        return binding.root
     }
 
+    //  Listen currentDuration from vm to change seekbar and textCurrentDuration values
     private fun flowUpdateSbCurrent() {
         vm.flowUpdateSbCurrent()
         coroutineScope.launch {
@@ -98,6 +95,7 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    // Listen maxDuration from vm to change seekbar and textMaxDuration values
     private fun flowUpdateSb() {
         vm.flowUpdateMaxSb()
         coroutineScope.launch {
@@ -111,6 +109,7 @@ class PlayerFragment : Fragment() {
     }
 
 
+    // Listen current music Id from vm to change state
     private fun flowUpdateFragmentOnSwitch() {
         vm.flowUpdateFragmentOnSwitch()
         coroutineScope.launch {
@@ -122,12 +121,15 @@ class PlayerFragment : Fragment() {
                     binding.playerFragmentTvMusicAuthor.text =
                         vm.playerRepository.getPlayerMusic().author
 
+                    binding.playerFragmentTvMusicAlbum.text = vm.playerRepository.getPlayerMusic().album
+
                     updatePlayPauseBtn()
                 }
             )
         }
     }
 
+    // Listen music play status from vm to change seekbar and textCurrentDuration values
     private fun flowUpdateBtnPlayPause() {
         vm.flowUpdateBtnPlayPause()
         coroutineScope.launch {
@@ -138,6 +140,8 @@ class PlayerFragment : Fragment() {
             )
         }
     }
+
+
 
     private fun updatePlayPauseBtn(isPlay: Boolean = vm.isPlay.value) {
         binding.playerFragmentBtnPause.setImageDrawable(

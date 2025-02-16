@@ -23,20 +23,21 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
     var curMusicId = MutableStateFlow(0)
     var isPlay = MutableStateFlow(false)
 
-
+    // Set current duration in mediaPlayer
     fun setCurDuration(newCurDurSec: Int) {
         val milisec = newCurDurSec * 1000
         playerRepository.setCurrentPlayerDuration(milisec)
     }
-
+    // Converter from sec to "mm:ss"
     fun getMmSsFromS(allSec: Int): String {
         val allMm = allSec / 60f
         val mm: Int = floor(allMm).toInt()
         val sec: Int = floor((allMm - mm) * 60).toInt()
 
-        return "$mm:$sec"
+        return "$mm:${if(sec<10) "0" else ""}$sec"
     }
 
+    // Waiting for playableStateFlow and currentDurationStateFlow to initialize and listen last then
     fun flowUpdateSbCurrent() {
         coroutineScope.launch {
             while (playerRepository.getCurrentDurationStateFlow() == null) {
@@ -45,7 +46,6 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
             while (playerRepository.getPlayableStateFlow() == null) {
                 delay(200)
             }
-
 
             playerRepository.getPlayableStateFlow()?.collect(
                 collector = {
@@ -61,6 +61,23 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
         }
     }
 
+    // Listen current music id and update [isPlay]
+    fun flowUpdateFragmentOnSwitch() {
+        coroutineScope.launch {
+            playerRepository.getCurrentMusicIdFlow().collect(
+                collector = { musicId ->
+                    isPlay.update {
+                        playerRepository.isPlaying()
+                    }
+                    curMusicId.update {
+                        musicId as Int
+                    }
+                }
+            )
+        }
+    }
+
+    // Waiting for playableStateFlow to initialize and listen it then
     fun flowUpdateMaxSb() {
         coroutineScope.launch {
             while (playerRepository.getMaxDurationStateFlow() == null) {
@@ -78,22 +95,7 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
         }
     }
 
-
-    fun flowUpdateFragmentOnSwitch() {
-        coroutineScope.launch {
-            playerRepository.getCurrentMusicIdFlow().collect(
-                collector = { musicId ->
-                    isPlay.update {
-                        playerRepository.isPlaying()
-                    }
-                    curMusicId.update {
-                        musicId as Int
-                    }
-                }
-            )
-        }
-    }
-
+    // Waiting for playableStateFlow to initialize and listen it then
     fun flowUpdateBtnPlayPause() {
         coroutineScope.launch {
             while (playerRepository.getPlayableStateFlow() == null) {
@@ -109,10 +111,11 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
         }
     }
 
+    // Job that update music current duration every second
     private fun getJobForCurrentSbPos(): Job {
         return coroutineScope.launch {
             while (true) {
-                Log.d("sb", "true:  == ${Thread.currentThread()}")
+                // If current duration equals to max duration (music is end) stop player
                 if (curDuration.value == maxDuration.value && maxDuration.value != 0) {
                     playerRepository.playMusic()
                     currentPosSbJob?.cancelAndJoin()
@@ -129,7 +132,6 @@ class PlayerViewModel @Inject constructor(val playerRepository: PlayerRepository
         coroutineScope.launch {
             currentPosSbJob?.cancelAndJoin()
         }
-
         super.onCleared()
     }
 

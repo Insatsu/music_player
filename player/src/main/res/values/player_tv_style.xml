@@ -52,5 +52,11 @@
         </item>
     </style>
 
+    <style name="player_tv_music_album_style" parent="player_tv_music_info_style">
+        <item name="android:textSize">
+            10sp
+        </item>
+    </style>
+
 
 </resources>

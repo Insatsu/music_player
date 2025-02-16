@@ -7,8 +7,10 @@ import ru.komarov.player.domain.PlayerRepository
 import ru.komarov.player.presentation.PlayerFragment
 import javax.inject.Scope
 
+// Player component with its dependencies
+
 @PlayerScope
-@Component(modules = [DataModule::class], dependencies = [PlayerMusicDeps::class])
+@Component(dependencies = [PlayerMusicDeps::class])
 interface PlayerComponent {
 
     fun inject(fragment: PlayerFragment)
@@ -27,11 +29,13 @@ interface PlayerMusicDeps {
     val playerRepository: PlayerRepository
 }
 
+// Receive deps from activity
 object PlayerMusicDepsStore {
     lateinit var deps: PlayerMusicDeps
 }
 
 
+// Viewmodel for save playerComponent on all lifecycle and to inject fragment
 internal class PlayerComponentViewModel : ViewModel() {
     val playerComponent =
         DaggerPlayerComponent.builder().deps(PlayerMusicDepsStore.deps).build()
